@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCSO Test Suite Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+        
+        .formula-display {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 10px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #2d3748;
+            background: #f7fafc;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 30px 0;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            color: #c53030;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .result-container.success {
+            background: #f0fff4;
+            border-color: #48bb78;
+            color: #2f855a;
+        }
+        
+        .result-container.loading {
+            background: #ebf8ff;
+            border-color: #4299e1;
+            color: #2b6cb0;
+        }
+        
+        .test-cases {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .test-case-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sewing Combination Strength Optimization</h1>
+            <div class="formula-display" id="formulaDisplay">4, 2<sup>2</sup></div>
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="strength">Strength (t):</label>
+                <input type="number" id="strength" min="1" value="4">
+            </div>
+            
+            <div class="input-group">
+                <label for="numInputs">Number of Inputs:</label>
+                <input type="number" id="numInputs" min="1" value="2">
+            </div>
+            
+            <div class="input-group">
+                <label for="paramValue">Value of Parameter:</label>
+                <input type="number" id="paramValue" min="1" value="2">
+            </div>
+            
+            <div class="divider"></div>
+            
+            <button class="button" onclick="generateTestSuite()">Generate Test Suite</button>
+            
+            <div class="stats" id="stats" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-value" id="popSize">50</div>
+                    <div class="stat-label">Population Size</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="iterations">100</div>
+                    <div class="stat-label">Max Iterations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="testCases">0</div>
+                    <div class="stat-label">Test Cases</div>
+                </div>
+            </div>
+            
+            <div id="testCasesContainer" style="display: none;"></div>
+            
+            <div class="result-container" id="result">
+                Awaiting input...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock implementation of your Java algorithm in JavaScript
+        class MockSBTO {
+            constructor(strength, numInputs, paramValue) {
+                this.POPULATION_SIZE = 50;
+                this.MAXIMUM_ITERATION = 100;
+                this.m = numInputs;
+                this.strength = strength;
+                this.values = new Array(numInputs).fill(paramValue);
+                this.testCases = [];
+            }
+            
+            getRandomTC() {
+                return this.values.map(() => Math.floor(Math.random() * 3) + 1);
+            }
+            
+            calculateWeight(testCase) {
+                // Simplified weight calculation
+                return Math.floor(Math.random() * 100) + 50;
+            }
+            
+            runSBTO() {
+                let bestFitness = -1;
+                let bestTC = null;
+                
+                for(let i = 0; i < 5; i++) { // Simplified loop for demo
+                    const tc = this.getRandomTC();
+                    const fitness = this.calculateWeight(tc);
+                    
+                    if(fitness > bestFitness) {
+                        bestFitness = fitness;
+                        bestTC = tc;
+                    }
+                }
+                
+                return {
+                    testCase: bestTC,
+                    fitness: bestFitness
+                };
+            }
+            
+            generateAllTestCases() {
+                this.testCases = [];
+                let count = 1;
+                
+                // Generate initial random test case
+                const initialRandom = this.getRandomTC();
+                this.testCases.push({
+                    number: count++,
+                    testCase: initialRandom,
+                    fitness: this.calculateWeight(initialRandom)
+                });
+                
+                // Generate more test cases (simplified version)
+                for(let i = 0; i < 10; i++) {
+                    const result = this.runSBTO();
+                    this.testCases.push({
+                        number: count++,
+                        testCase: result.testCase,
+                        fitness: result.fitness
+                    });
+                }
+                
+                return this.testCases;
+            }
+        }
+        
+        function updateFormula() {
+            const strength = document.getElementById("strength").value || 4;
+            const numInputs = document.getElementById("numInputs").value || 2;
+            const paramValue = document.getElementById("paramValue").value || 2;
+            
+            document.getElementById("formulaDisplay").innerHTML = 
+                `${strength}, ${numInputs}<sup>${paramValue}</sup>`;
+        }
+        
+        function generateTestSuite() {
+            const strength = parseInt(document.getElementById("strength").value);
+            const numInputs = parseInt(document.getElementById("numInputs").value);
+            const paramValue = parseInt(document.getElementById("paramValue").value);
+            
+            if(!strength || !numInputs || !paramValue) {
+                document.getElementById("result").innerHTML = 
+                    "Error: Please fill all fields with valid numbers";
+                document.getElementById("result").className = "result-container";
+                return;
+            }
+            
+            // Update formula
+            updateFormula();
+            
+            // Show loading state
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "Generating test suite...";
+            resultDiv.className = "result-container loading";
+            
+            document.getElementById("stats").style.display = "none";
+            document.getElementById("testCasesContainer").style.display = "none";
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                try {
+                    // Initialize and run mock SBTO algorithm
+                    const sbto = new MockSBTO(strength, numInputs, paramValue);
+                    const testCases = sbto.generateAllTestCases();
+                    
+                    // Display results
+                    resultDiv.innerHTML = "Test suite generated successfully!";
+                    resultDiv.className = "result-container success";
+                    
+                    // Show statistics
+                    document.getElementById("stats").style.display = "flex";
+                    document.getElementById("testCases").textContent = testCases.length;
+                    
+                    // Display test cases
+                    const testCasesContainer = document.getElementById("testCasesContainer");
+                    testCasesContainer.style.display = "block";
+                    
+                    let testCasesHTML = '<div class="test-cases">';
+                    testCases.forEach(tc => {
+                        testCasesHTML += `
+                            <div class="test-case-item">
+                                <strong>${tc.number})</strong> [${tc.testCase.join(', ')}] 
+                                <span style="float:right; color:#718096;">Fitness: ${tc.fitness}</span>
+                            </div>
+                        `;
+                    });
+                    testCasesHTML += '</div>';
+                    testCasesContainer.innerHTML = testCasesHTML;
+                    
+                } catch (error) {
+                    resultDiv.innerHTML = `Error generating test suite: ${error.message}`;
+                    resultDiv.className = "result-container";
+                }
+            }, 1500);
+        }
+        
+        // Initialize formula display
+        document.addEventListener('DOMContentLoaded', updateFormula);
+        
+        // Update formula on input changes
+        document.getElementById("strength").addEventListener("input", updateFormula);
+        document.getElementById("numInputs").addEventListener("input", updateFormula);
+        document.getElementById("paramValue").addEventListener("input", updateFormula);
+    </script>
+</body>
+</html>
