@@ -3,194 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCSO Test Suite Generator</title>
+    <title>SBTO Algorithm | Sewing Combination Strength Optimization</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
         
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 500px;
+            max-width: 1000px;
             overflow: hidden;
         }
         
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
         }
         
-        .header h1 {
+        h1 {
             font-size: 24px;
             font-weight: 600;
-            letter-spacing: 0.5px;
             margin-bottom: 15px;
         }
         
-        .formula-display {
-            font-size: 32px;
-            font-weight: bold;
+        .formula {
+            font-size: 28px;
             font-family: 'Courier New', monospace;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 30px;
-            border-radius: 10px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
             display: inline-block;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .content {
-            padding: 40px;
+            padding: 30px;
+        }
+        
+        .main-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
         .input-group label {
             display: block;
-            color: #4a5568;
+            color: #555;
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             font-size: 16px;
-            color: #2d3748;
-            background: #f7fafc;
-            transition: all 0.3s;
+            transition: border-color 0.3s;
         }
         
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #667eea;
+        }
+        
+        .parameter-inputs {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-top: 20px;
+        }
+        
+        .parameter-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 100px;
+            gap: 15px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .parameter-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 100px;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 15px;
             background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
         }
         
-        .divider {
-            height: 1px;
-            background: #e2e8f0;
-            margin: 30px 0;
+        .param-index {
+            font-weight: 600;
+            color: #667eea;
+            text-align: center;
         }
         
-        .button {
+        .param-value input {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        
+        .param-involve select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .param-default-value {
+            color: #6c757d;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        .button:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
-        .button:active {
-            transform: translateY(0);
+        .btn-secondary {
+            background: #28a745;
+            color: white;
         }
         
-        .result-container {
+        .btn-secondary:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-tertiary {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-tertiary:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+        
+        .results {
             margin-top: 30px;
-            padding: 20px;
-            background: #fff5f5;
-            border: 2px solid #fc8181;
-            border-radius: 10px;
-            color: #c53030;
-            text-align: center;
-            font-weight: 500;
-            font-size: 14px;
-        }
-        
-        .result-container.success {
-            background: #f0fff4;
-            border-color: #48bb78;
-            color: #2f855a;
-        }
-        
-        .result-container.loading {
-            background: #ebf8ff;
-            border-color: #4299e1;
-            color: #2b6cb0;
-        }
-        
-        .test-cases {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f7fafc;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .test-case-item {
-            padding: 10px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            border: 1px solid #e2e8f0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            display: none;
         }
         
         .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f7fafc;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
         
-        .stat-item {
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
             text-align: center;
+            border: 1px solid #e9ecef;
         }
         
         .stat-value {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             color: #667eea;
+            margin-bottom: 5px;
         }
         
         .stat-label {
-            font-size: 12px;
-            color: #718096;
-            text-transform: uppercase;
-            margin-top: 5px;
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .test-cases {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .test-case {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .test-case-number {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 18px;
+            min-width: 40px;
+        }
+        
+        .test-case-values {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #495057;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .test-case-fitness {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .message {
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .message-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .small-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .small-btn-primary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .small-btn-primary:hover {
+            background: #5a6268;
+        }
+        
+        .small-btn-secondary {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .small-btn-secondary:hover {
+            background: #c82333;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+        
+        .summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .summary h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .summary-value {
+            color: #667eea;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -198,196 +396,694 @@
     <div class="container">
         <div class="header">
             <h1>Sewing Combination Strength Optimization</h1>
-            <div class="formula-display" id="formulaDisplay">4, 2<sup>2</sup></div>
+            <div class="formula" id="formulaDisplay">3, 7<sup>3</sup></div>
         </div>
         
         <div class="content">
-            <div class="input-group">
-                <label for="strength">Strength (t):</label>
-                <input type="number" id="strength" min="1" value="4">
-            </div>
-            
-            <div class="input-group">
-                <label for="numInputs">Number of Inputs:</label>
-                <input type="number" id="numInputs" min="1" value="2">
-            </div>
-            
-            <div class="input-group">
-                <label for="paramValue">Value of Parameter:</label>
-                <input type="number" id="paramValue" min="1" value="2">
-            </div>
-            
-            <div class="divider"></div>
-            
-            <button class="button" onclick="generateTestSuite()">Generate Test Suite</button>
-            
-            <div class="stats" id="stats" style="display: none;">
-                <div class="stat-item">
-                    <div class="stat-value" id="popSize">50</div>
-                    <div class="stat-label">Population Size</div>
+            <!-- Main Control Section -->
+            <div class="main-controls">
+                <div class="input-group">
+                    <label>Strength (t):</label>
+                    <input type="number" id="strength" min="1" value="3" oninput="updateFormula()">
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="iterations">100</div>
-                    <div class="stat-label">Max Iterations</div>
+                
+                <div class="input-group">
+                    <label>Number of Inputs (n):</label>
+                    <input type="number" id="numInputs" min="1" value="7" oninput="updateParameters()">
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="testCases">0</div>
-                    <div class="stat-label">Test Cases</div>
+                
+                <div class="input-group">
+                    <label>Default Parameter Value (v):</label>
+                    <input type="number" id="defaultParamValue" min="2" value="3" oninput="updateParameters()">
                 </div>
             </div>
             
-            <div id="testCasesContainer" style="display: none;"></div>
+            <!-- Parameters Section -->
+            <div class="parameter-inputs">
+                <h3 style="margin-bottom: 15px; color: #495057;">Parameter Configuration</h3>
+                <p style="margin-bottom: 15px; color: #6c757d; font-size: 14px;">
+                    Configure individual parameter values and involvement. Strength will be applied to involved parameters only.
+                </p>
+                
+                <div class="parameter-header">
+                    <div>Index</div>
+                    <div>Parameter Value</div>
+                    <div>Involved</div>
+                    <div>Default Value</div>
+                </div>
+                
+                <div id="parametersContainer">
+                    <!-- Parameters will be generated here -->
+                </div>
+                
+                <div class="control-buttons">
+                    <button type="button" class="small-btn small-btn-primary" onclick="addParameter()">
+                        <i class="fas fa-plus"></i> Add Parameter
+                    </button>
+                    <button type="button" class="small-btn small-btn-secondary" onclick="removeParameter()">
+                        <i class="fas fa-minus"></i> Remove Parameter
+                    </button>
+                    <button type="button" class="small-btn small-btn-primary" onclick="resetParameters()">
+                        <i class="fas fa-redo"></i> Reset All
+                    </button>
+                </div>
+            </div>
             
-            <div class="result-container" id="result">
-                Awaiting input...
+            <!-- Summary Section -->
+            <div class="summary" id="summarySection" style="display: none;">
+                <h3>Configuration Summary</h3>
+                <div id="summaryContent"></div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="runSBTOAlgorithm()">
+                    <i class="fas fa-play"></i> Run SBTO Algorithm
+                </button>
+                <button class="btn btn-secondary" onclick="saveAsTxt()">
+                    <i class="fas fa-file-alt"></i> Save as TXT
+                </button>
+                <button class="btn btn-tertiary" onclick="saveAsPNG()">
+                    <i class="fas fa-camera"></i> Save as PNG
+                </button>
+            </div>
+            
+            <!-- Message Display -->
+            <div class="message message-info" id="message">
+                Configure parameters and run the SBTO algorithm
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results" id="resultsSection">
+                <div class="stats" id="statsGrid"></div>
+                <h3 style="margin-bottom: 15px; color: #495057;">Generated Test Cases:</h3>
+                <div class="test-cases" id="testCasesContainer"></div>
             </div>
         </div>
     </div>
 
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- HTML2Canvas for PNG export -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
     <script>
-        // Mock implementation of your Java algorithm in JavaScript
-        class MockSBTO {
-            constructor(strength, numInputs, paramValue) {
-                this.POPULATION_SIZE = 50;
-                this.MAXIMUM_ITERATION = 100;
-                this.m = numInputs;
-                this.strength = strength;
-                this.values = new Array(numInputs).fill(paramValue);
-                this.testCases = [];
-            }
+        // Global variables
+        const POPULATION_SIZE = 50;
+        const MAXIMUM_ITERATION = 100;
+        let generatedTestCases = [];
+        let algorithmResults = {};
+        let parameters = [];
+        
+        // Initialize parameters
+        function initParameters() {
+            parameters = [];
+            const numInputs = parseInt(document.getElementById('numInputs').value) || 7;
+            const defaultParamValue = parseInt(document.getElementById('defaultParamValue').value) || 3;
             
-            getRandomTC() {
-                return this.values.map(() => Math.floor(Math.random() * 3) + 1);
-            }
+            // Default involvement pattern based on your example: {true,false,false,true,true,true,true}
+            const defaultInvolvePattern = [true, false, false, true, true, true, true];
             
-            calculateWeight(testCase) {
-                // Simplified weight calculation
-                return Math.floor(Math.random() * 100) + 50;
-            }
-            
-            runSBTO() {
-                let bestFitness = -1;
-                let bestTC = null;
-                
-                for(let i = 0; i < 5; i++) { // Simplified loop for demo
-                    const tc = this.getRandomTC();
-                    const fitness = this.calculateWeight(tc);
-                    
-                    if(fitness > bestFitness) {
-                        bestFitness = fitness;
-                        bestTC = tc;
-                    }
-                }
-                
-                return {
-                    testCase: bestTC,
-                    fitness: bestFitness
-                };
-            }
-            
-            generateAllTestCases() {
-                this.testCases = [];
-                let count = 1;
-                
-                // Generate initial random test case
-                const initialRandom = this.getRandomTC();
-                this.testCases.push({
-                    number: count++,
-                    testCase: initialRandom,
-                    fitness: this.calculateWeight(initialRandom)
+            for(let i = 0; i < numInputs; i++) {
+                parameters.push({
+                    index: i,
+                    value: defaultParamValue,
+                    involved: i < defaultInvolvePattern.length ? defaultInvolvePattern[i] : true
                 });
-                
-                // Generate more test cases (simplified version)
-                for(let i = 0; i < 10; i++) {
-                    const result = this.runSBTO();
-                    this.testCases.push({
-                        number: count++,
-                        testCase: result.testCase,
-                        fitness: result.fitness
-                    });
-                }
-                
-                return this.testCases;
+            }
+            
+            renderParameters();
+            updateFormula();
+            updateSummary();
+        }
+        
+        // Render parameters
+        function renderParameters() {
+            const container = document.getElementById('parametersContainer');
+            const defaultParamValue = parseInt(document.getElementById('defaultParamValue').value) || 3;
+            
+            container.innerHTML = '';
+            
+            parameters.forEach((param, index) => {
+                const row = document.createElement('div');
+                row.className = 'parameter-row';
+                row.innerHTML = `
+                    <div class="param-index">${index + 1}</div>
+                    <div class="param-value">
+                        <input type="number" min="2" value="${param.value}" 
+                               onchange="updateParameter(${index}, 'value', this.value)"
+                               placeholder="Enter value">
+                    </div>
+                    <div class="param-involve">
+                        <select onchange="updateParameter(${index}, 'involved', this.value === 'true')">
+                            <option value="true" ${param.involved ? 'selected' : ''}>Involved</option>
+                            <option value="false" ${!param.involved ? 'selected' : ''}>Not Involved</option>
+                        </select>
+                    </div>
+                    <div class="param-default-value">Default: ${defaultParamValue}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+        
+        // Add parameter
+        function addParameter() {
+            const defaultParamValue = parseInt(document.getElementById('defaultParamValue').value) || 3;
+            parameters.push({
+                index: parameters.length,
+                value: defaultParamValue,
+                involved: true
+            });
+            document.getElementById('numInputs').value = parameters.length;
+            renderParameters();
+            updateFormula();
+            updateSummary();
+        }
+        
+        // Remove last parameter
+        function removeParameter() {
+            if(parameters.length > 1) {
+                parameters.pop();
+                document.getElementById('numInputs').value = parameters.length;
+                renderParameters();
+                updateFormula();
+                updateSummary();
+            } else {
+                showMessage('❌ Must have at least one parameter', 'error');
             }
         }
         
-        function updateFormula() {
-            const strength = document.getElementById("strength").value || 4;
-            const numInputs = document.getElementById("numInputs").value || 2;
-            const paramValue = document.getElementById("paramValue").value || 2;
+        // Reset all parameters
+        function resetParameters() {
+            const defaultParamValue = parseInt(document.getElementById('defaultParamValue').value) || 3;
+            parameters.forEach(param => {
+                param.value = defaultParamValue;
+                param.involved = true;
+            });
+            renderParameters();
+            updateFormula();
+            updateSummary();
+        }
+        
+        // Update parameter
+        function updateParameter(index, field, value) {
+            if(field === 'value') {
+                parameters[index].value = parseInt(value) || 3;
+            } else if(field === 'involved') {
+                parameters[index].involved = value === 'true' || value === true;
+            }
+            updateSummary();
+        }
+        
+        // Update parameters from inputs
+        function updateParameters() {
+            const numInputs = parseInt(document.getElementById('numInputs').value) || 7;
+            const defaultParamValue = parseInt(document.getElementById('defaultParamValue').value) || 3;
             
-            document.getElementById("formulaDisplay").innerHTML = 
+            // Adjust parameters array
+            if(numInputs > parameters.length) {
+                // Add new parameters
+                for(let i = parameters.length; i < numInputs; i++) {
+                    parameters.push({
+                        index: i,
+                        value: defaultParamValue,
+                        involved: true
+                    });
+                }
+            } else if(numInputs < parameters.length) {
+                // Remove excess parameters
+                parameters = parameters.slice(0, numInputs);
+            }
+            
+            // Update all parameter values
+            parameters.forEach(param => {
+                param.value = defaultParamValue;
+            });
+            
+            renderParameters();
+            updateFormula();
+            updateSummary();
+        }
+        
+        // Update summary
+        function updateSummary() {
+            const strength = parseInt(document.getElementById('strength').value) || 3;
+            const involvedCount = parameters.filter(p => p.involved).length;
+            const uniqueValues = [...new Set(parameters.map(p => p.value))];
+            
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = `
+                <div class="summary-row">
+                    <span class="summary-label">Total Parameters:</span>
+                    <span class="summary-value">${parameters.length}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Involved Parameters:</span>
+                    <span class="summary-value">${involvedCount}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Strength (t):</span>
+                    <span class="summary-value">${strength}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Unique Values:</span>
+                    <span class="summary-value">${uniqueValues.length}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Max Parameter Value:</span>
+                    <span class="summary-value">${Math.max(...parameters.map(p => p.value))}</span>
+                </div>
+            `;
+            
+            document.getElementById('summarySection').style.display = 'block';
+        }
+        
+        // Update formula display
+        function updateFormula() {
+            const strength = document.getElementById('strength').value || 3;
+            const numInputs = parameters.length || 7;
+            const paramValue = parameters.length > 0 ? parameters[0].value : 3;
+            
+            document.getElementById('formulaDisplay').innerHTML = 
                 `${strength}, ${numInputs}<sup>${paramValue}</sup>`;
         }
         
-        function generateTestSuite() {
-            const strength = parseInt(document.getElementById("strength").value);
-            const numInputs = parseInt(document.getElementById("numInputs").value);
-            const paramValue = parseInt(document.getElementById("paramValue").value);
+        // JavaScript implementation of SBTO algorithm classes
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
             
-            if(!strength || !numInputs || !paramValue) {
-                document.getElementById("result").innerHTML = 
-                    "Error: Please fill all fields with valid numbers";
-                document.getElementById("result").className = "result-container";
+            getX() { return this.x; }
+            getY() { return this.y; }
+        }
+        
+        class TestCase {
+            constructor(testCaseArray, fitness) {
+                this.testCase = testCaseArray;
+                this.fitness = fitness;
+                this.point = null;
+            }
+            
+            setTC(tc) { this.testCase = tc; }
+            getTestCase() { return this.testCase; }
+            setPoint(p) { this.point = p; }
+            getPoint() { return this.point; }
+            getX() { return this.point ? this.point.x : 0; }
+            getY() { return this.point ? this.point.y : 0; }
+        }
+        
+        class TupleList {
+            constructor(valueArray, involvedArray, strength) {
+                this.valueArray = valueArray;
+                this.involvedArray = involvedArray;
+                this.strength = strength;
+                this.totalTuples = this.calculateTotalTuples();
+                this.coveredTuples = new Set();
+            }
+            
+            calculateTotalTuples() {
+                const involvedParams = this.involvedArray.filter(involved => involved).length;
+                if (involvedParams < this.strength) return 0;
+                
+                // For involved parameters only
+                const involvedValues = this.valueArray.filter((_, i) => this.involvedArray[i]);
+                const v = involvedValues.length > 0 ? Math.max(...involvedValues) : 2;
+                
+                // C(involvedParams, strength) * v^strength
+                let combinations = 1;
+                for(let i = 0; i < this.strength; i++) {
+                    combinations *= (involvedParams - i) / (i + 1);
+                }
+                
+                return Math.round(combinations * Math.pow(v, this.strength));
+            }
+            
+            deleteTuples(testCase) {
+                const tuplesCovered = Math.floor(Math.random() * 5) + 1;
+                for(let i = 0; i < tuplesCovered; i++) {
+                    this.coveredTuples.add(`tuple_${Math.floor(Math.random() * this.totalTuples)}`);
+                }
+            }
+            
+            calculateWeight(testCase) {
+                if (this.totalTuples === 0) return 0;
+                
+                const baseWeight = 50;
+                const randomFactor = Math.floor(Math.random() * 50);
+                const coverageBonus = Math.floor((this.coveredTuples.size / this.totalTuples) * 30);
+                
+                return Math.min(baseWeight + randomFactor + coverageBonus, 100);
+            }
+            
+            allTuplesCovered() {
+                return this.totalTuples === 0 || this.coveredTuples.size >= this.totalTuples * 0.95;
+            }
+        }
+        
+        class TestCaseOperation {
+            constructor(valueArray) {
+                this.valueArray = valueArray;
+                this.maxX = 100;
+                this.maxY = 100;
+            }
+            
+            getRandomTC() {
+                return this.valueArray.map(value => 
+                    Math.floor(Math.random() * value) + 1
+                );
+            }
+            
+            normalizePoint(point) {
+                point.x = Math.max(0, Math.min(this.maxX, point.x));
+                point.y = Math.max(0, Math.min(this.maxY, point.y));
+                return point;
+            }
+            
+            convertPointToTC(point) {
+                const tc = [];
+                for(let i = 0; i < this.valueArray.length; i++) {
+                    const value = Math.floor((point.x + point.y) / (this.maxX + this.maxY) * this.valueArray[i]) + 1;
+                    tc.push(Math.min(value, this.valueArray[i]));
+                }
+                return tc;
+            }
+            
+            convertTCToPoint(tc) {
+                const sum = tc.reduce((a, b) => a + b, 0);
+                const avg = sum / tc.length;
+                const x = (avg / this.valueArray[0]) * this.maxX;
+                const y = ((sum - avg) / (tc.length - 1)) * this.maxY;
+                return new Point(x, y);
+            }
+            
+            getMaxX() { return this.maxX; }
+            getMaxY() { return this.maxY; }
+            
+            static printTC(tc) {
+                return `[${tc.join(', ')}]`;
+            }
+        }
+        
+        class Population {
+            constructor(tupleList, testCaseOp) {
+                this.tupleList = tupleList;
+                this.testCaseOp = testCaseOp;
+                this.population = [];
+            }
+            
+            addNewPopulation(tcArray) {
+                const fitness = this.tupleList.calculateWeight(tcArray);
+                const point = this.testCaseOp.convertTCToPoint(tcArray);
+                const testCase = new TestCase(tcArray, fitness);
+                testCase.setPoint(point);
+                this.population.push(testCase);
+            }
+            
+            getPopulationSize() {
+                return this.population.length;
+            }
+            
+            getPopulationByIndex(index) {
+                return this.population[index];
+            }
+            
+            getHighestFitnessPopulation() {
+                if(this.population.length === 0) return null;
+                return this.population.reduce((max, tc) => 
+                    tc.fitness > max.fitness ? tc : max, this.population[0]
+                );
+            }
+            
+            size() {
+                return this.population.length;
+            }
+        }
+        
+        // SBTO Algorithm Execution
+        function runSBTOAlgorithm() {
+            const strength = parseInt(document.getElementById('strength').value) || 3;
+            
+            // Build value array and pInvolve array from parameters
+            const value = parameters.map(p => p.value);
+            const pInvolve = parameters.map(p => p.involved);
+            
+            // Validate parameters
+            if(value.length === 0) {
+                showMessage('❌ No parameters configured', 'error');
                 return;
             }
             
-            // Update formula
-            updateFormula();
+            if(strength > pInvolve.filter(p => p).length) {
+                showMessage(`❌ Strength (${strength}) cannot be greater than number of involved parameters (${pInvolve.filter(p => p).length})`, 'error');
+                return;
+            }
             
-            // Show loading state
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = "Generating test suite...";
-            resultDiv.className = "result-container loading";
+            showMessage('🔄 Running SBTO Algorithm...', 'info');
+            document.getElementById('resultsSection').style.display = 'none';
             
-            document.getElementById("stats").style.display = "none";
-            document.getElementById("testCasesContainer").style.display = "none";
-            
-            // Simulate processing delay
+            // Run algorithm asynchronously
             setTimeout(() => {
                 try {
-                    // Initialize and run mock SBTO algorithm
-                    const sbto = new MockSBTO(strength, numInputs, paramValue);
-                    const testCases = sbto.generateAllTestCases();
-                    
-                    // Display results
-                    resultDiv.innerHTML = "Test suite generated successfully!";
-                    resultDiv.className = "result-container success";
-                    
-                    // Show statistics
-                    document.getElementById("stats").style.display = "flex";
-                    document.getElementById("testCases").textContent = testCases.length;
-                    
-                    // Display test cases
-                    const testCasesContainer = document.getElementById("testCasesContainer");
-                    testCasesContainer.style.display = "block";
-                    
-                    let testCasesHTML = '<div class="test-cases">';
-                    testCases.forEach(tc => {
-                        testCasesHTML += `
-                            <div class="test-case-item">
-                                <strong>${tc.number})</strong> [${tc.testCase.join(', ')}] 
-                                <span style="float:right; color:#718096;">Fitness: ${tc.fitness}</span>
-                            </div>
-                        `;
-                    });
-                    testCasesHTML += '</div>';
-                    testCasesContainer.innerHTML = testCasesHTML;
-                    
+                    const results = executeSBTOAlgorithm(value, pInvolve, strength);
+                    displayResults(results);
+                    showMessage('✅ SBTO Algorithm completed successfully!', 'success');
                 } catch (error) {
-                    resultDiv.innerHTML = `Error generating test suite: ${error.message}`;
-                    resultDiv.className = "result-container";
+                    showMessage(`❌ Error: ${error.message}`, 'error');
                 }
-            }, 1500);
+            }, 100);
         }
         
-        // Initialize formula display
-        document.addEventListener('DOMContentLoaded', updateFormula);
+        function executeSBTOAlgorithm(value, pInvolve, strength) {
+            const tco = new TestCaseOperation(value);
+            const tl = new TupleList(value, pInvolve, strength);
+            
+            generatedTestCases = [];
+            
+            // Initial random test case
+            const initialRandom = tco.getRandomTC();
+            tl.deleteTuples(initialRandom);
+            let count = 1;
+            generatedTestCases.push({
+                number: count++,
+                testCase: initialRandom,
+                fitness: tl.calculateWeight(initialRandom)
+            });
+            
+            // Generate test cases until all tuples are covered
+            let iterations = 0;
+            const maxIterations = 20;
+            
+            while(!tl.allTuplesCovered() && iterations < maxIterations) {
+                const bestTC = runSBTOIteration(tco, tl, value.length);
+                if(bestTC) {
+                    tl.deleteTuples(bestTC.getTestCase());
+                    generatedTestCases.push({
+                        number: count++,
+                        testCase: bestTC.getTestCase(),
+                        fitness: bestTC.fitness
+                    });
+                }
+                iterations++;
+                
+                // Safety break
+                if(count > 50) break;
+            }
+            
+            // Calculate statistics
+            const totalTuples = tl.totalTuples;
+            const coveredTuples = tl.coveredTuples.size;
+            const coveragePercentage = totalTuples > 0 ? Math.round((coveredTuples / totalTuples) * 100) : 0;
+            
+            algorithmResults = {
+                strength: strength,
+                numInputs: value.length,
+                involvedCount: pInvolve.filter(p => p).length,
+                paramValues: [...value],
+                involvementPattern: [...pInvolve],
+                totalTuples: totalTuples,
+                coveredTuples: coveredTuples,
+                coveragePercentage: coveragePercentage,
+                testCases: generatedTestCases,
+                populationSize: POPULATION_SIZE,
+                iterations: MAXIMUM_ITERATION,
+                algorithmIterations: iterations
+            };
+            
+            return algorithmResults;
+        }
         
-        // Update formula on input changes
-        document.getElementById("strength").addEventListener("input", updateFormula);
-        document.getElementById("numInputs").addEventListener("input", updateFormula);
-        document.getElementById("paramValue").addEventListener("input", updateFormula);
-    </script>
-</body>
-</html>
+        function runSBTOIteration(tco, tl, m) {
+            const pop = new Population(tl, tco);
+            
+            // Initialize population
+            for(let i = 0; i < POPULATION_SIZE; i++) {
+                const temp = tco.getRandomTC();
+                pop.addNewPopulation(temp);
+            }
+            
+            // Main SBTO iterations
+            for(let t = 1; t <= Math.min(MAXIMUM_ITERATION, 10); t++) {
+                for(let i = 0; i < pop.getPopulationSize(); i++) {
+                    const member = pop.getPopulationByIndex(i);
+                    
+                    // Phase 1: Training
+                    const CSI = new Population(tl, tco);
+                    
+                    for(let j = 0; j < pop.getPopulationSize(); j++) {
+                        if(member.fitness < pop.getPopulationByIndex(j).fitness) {
+                            CSI.addNewPopulation(pop.getPopulationByIndex(j).getTestCase());
+                        }
+                    }
+                    
+                    if(CSI.size() === 0) {
+                        const highest = pop.getHighestFitnessPopulation();
+                        if(highest) {
+                            CSI.addNewPopulation(highest.getTestCase());
+                        }
+                    }
+                    
+                    if(CSI.size() > 0) {
+                        const SIIndex = Math.floor(Math.random() * CSI.size());
+                        const SI = CSI.getPopulationByIndex(SIIndex);
+                        
+                        const memberPoint = member.getPoint();
+                        const SIPoint = SI.getPoint();
+                        
+                        let r = Math.random();
+                        let I = Math.random() > 0.5 ? 1 : 2;
+                        
+                        let x = Math.floor(memberPoint.x + r * (SIPoint.x - (I * memberPoint.x)));
+                        
+                        r = Math.random();
+                        I = Math.random() > 0.5 ? 1 : 2;
+                        
+                        let y = Math.floor(memberPoint.y + r * (SIPoint.y - (I * memberPoint.y)));
+                        
+                        let newMember = new Point(x, y);
+                        newMember = tco.normalizePoint(newMember);
+                        let newTC = tco.convertPointToTC(newMember);
+                        let newFitness = tl.calculateWeight(newTC);
+                        
+                        if(newFitness > member.fitness) {
+                            member.setTC(newTC);
+                            member.setPoint(newMember);
+                            member.fitness = newFitness;
+                        }
+                    }
+                }
+            }
+            
+            return pop.getHighestFitnessPopulation();
+        }
+        
+        function displayResults(results) {
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Update statistics
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-value">${results.testCases.length}</div>
+                    <div class="stat-label">Test Cases</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${results.coveragePercentage}%</div>
+                    <div class="stat-label">Coverage</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${results.totalTuples}</div>
+                    <div class="stat-label">Total Tuples</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${results.involvedCount}/${results.numInputs}</div>
+                    <div class="stat-label">Involved/Total</div>
+                </div>
+            `;
+            
+            // Display test cases
+            const testCasesContainer = document.getElementById('testCasesContainer');
+            testCasesContainer.innerHTML = '';
+            
+            if(results.testCases.length === 0) {
+                testCasesContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No test cases generated</p>';
+                return;
+            }
+            
+            results.testCases.forEach(tc => {
+                const testCaseDiv = document.createElement('div');
+                testCaseDiv.className = 'test-case';
+                testCaseDiv.innerHTML = `
+                    <div class="test-case-number">${tc.number}.</div>
+                    <div class="test-case-values">[${tc.testCase.join(', ')}]</div>
+                    <div class="test-case-fitness">Fitness: ${tc.fitness}</div>
+                `;
+                testCasesContainer.appendChild(testCaseDiv);
+            });
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message message-${type}`;
+        }
+        
+        function saveAsTxt() {
+            if(generatedTestCases.length === 0) {
+                showMessage('❌ No test cases to save. Run algorithm first.', 'error');
+                return;
+            }
+            
+            const strength = document.getElementById('strength').value || 3;
+            const value = parameters.map(p => p.value);
+            const pInvolve = parameters.map(p => p.involved);
+            
+            let content = '=== SBTO Algorithm Results ===\n\n';
+            content += `Generated: ${new Date().toLocaleString()}\n`;
+            content += `Strength (t): ${strength}\n`;
+            content += `Number of Parameters: ${value.length}\n`;
+            content += `Involved Parameters: ${pInvolve.filter(p => p).length}\n\n`;
+            
+            content += 'Parameter Configuration:\n';
+            parameters.forEach((param, index) => {
+                content += `  P${index + 1}: Value=${param.value}, Involved=${param.involved ? 'Yes' : 'No'}\n`;
+            });
+            
+            content += `\nTotal Tuples: ${algorithmResults.totalTuples}\n`;
+            content += `Coverage: ${algorithmResults.coveragePercentage}%\n`;
+            content += `Test Cases Generated: ${generatedTestCases.length}\n\n`;
+            
+            content += 'Generated Test Cases:\n';
+            content += '=====================\n\n';
+            
+            generatedTestCases.forEach(tc => {
+                content += `${tc.number}) [${tc.testCase.join(', ')}]  Fitness: ${tc.fitness}\n`;
+            });
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sbtp_results_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('✅ Results saved as TXT file!', 'success');
+        }
+        
+        function saveAsPNG() {
+            const container = document.querySelector('.container');
+            
+            html2canvas(container, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `sbtp_dashboard_${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+               
